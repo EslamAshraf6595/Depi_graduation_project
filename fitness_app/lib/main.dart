@@ -1,10 +1,10 @@
 import 'package:fitness_app/roots/app_roots.dart';
-import 'package:fitness_app/theme/app_theme.dart';
+import 'package:fitness_app/utils/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'pages/home/homeScreen.dart';
-import 'theme/theme_provider.dart';
+import 'utils/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

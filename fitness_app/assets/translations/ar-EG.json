@@ -2,5 +2,13 @@
   "app_title": "تطبيقي الرياضي",
   "welcome": "مرحباً بك في التطبيق!",
   "change_language": "تغيير اللغة",
-   "change_language": "تغيير اللغة"
+   "change_language": "تغيير اللغة",
+  "home": "الرئيسية",
+  "calendar": "التقويم",
+  "gym": "الصالة الرياضية",
+  "profile": "الملف الشخصي",
+  "Workout": "تمرين",
+  "change_theme": "تغيير النمط",
+  "create_new_plan": "إنشاء خطة جديدة"
+
 }
