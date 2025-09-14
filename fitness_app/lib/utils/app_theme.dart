@@ -1,4 +1,4 @@
-import 'package:fitness_app/theme/app_color.dart';
+import 'package:fitness_app/utils/app_color.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
