@@ -58,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       //     ],
       //   ),
       // ),
+      
       body: TabsList.tabs[selectedIndex],
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: BottomNavigationBar(
@@ -107,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: "profile".tr()),
         ],
       ),
+      
     );
   }
 }
