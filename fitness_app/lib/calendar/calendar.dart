@@ -6,7 +6,10 @@ class Calendar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'.tr()),
+        title: Text(
+          'Calendar'.tr(),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
       body: Center(
         child: Text('This is the Calendar Screen'),

@@ -10,7 +10,7 @@ class WorkOut extends StatelessWidget {
       body: Center(
         child: Text(
           "workout".tr(),
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: Colors.white),
         ),
       ),
     );
