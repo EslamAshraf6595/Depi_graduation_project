@@ -1,8 +1,6 @@
-import 'dart:math';
 
 import 'package:fitness_app/utils/app_assets.dart';
 import 'package:fitness_app/utils/app_color.dart';
-import 'package:fitness_app/utils/app_theme.dart';
 import 'package:fitness_app/utils/tabs_list.dart';
 import 'package:fitness_app/utils/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -73,20 +71,20 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: AppColors.grey,
         items: [
           BottomNavigationBarItem(
-              icon: ImageIcon(
+              icon: const ImageIcon(
                 AssetImage(AppAssets.home),
               ),
               label: "home".tr()),
           BottomNavigationBarItem(
-              icon: ImageIcon(
+              icon: const ImageIcon(
                 AssetImage(AppAssets.gym),
                 size: 30,
               ),
               label: "gym".tr()),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline), label: "Workout".tr()),
+              icon: const Icon(Icons.add_circle_outline), label: "Workout".tr()),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage(AppAssets.calendar)),
+              icon: const ImageIcon(AssetImage(AppAssets.calendar)),
               label: "calendar".tr()),
           BottomNavigationBarItem(
               icon: Container(
@@ -99,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   shape: BoxShape.circle,
                 ),
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   radius: 14,
                   backgroundImage: AssetImage(AppAssets.user),
                 ),
