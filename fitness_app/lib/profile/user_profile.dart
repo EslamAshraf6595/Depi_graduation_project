@@ -7,9 +7,13 @@ class UserProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: Text(
+          'User Profile',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
-      body: const Center(
+      
+      body: Center(
         child: Text('This is the user profile page.'),
       ),
     );
