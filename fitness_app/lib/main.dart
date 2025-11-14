@@ -5,7 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 import 'pages/home/homeScreen.dart';
 import 'utils/theme_provider.dart';
-import 'pages/workout/workout_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,13 +16,13 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: EasyLocalization(
-          supportedLocales: const [
+          supportedLocales: [
             Locale('en', 'US'),
             Locale('ar', 'EG'),
           ],
           path: 'assets/translations',
-          fallbackLocale: const Locale('en', 'US'),
-          child: const MyApp()),
+          fallbackLocale: Locale('en', 'US'),
+          child: MyApp()),
     ),
   );
 }
@@ -45,8 +44,7 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode:themeProvider.themeMode,
       routes: {
-        AppRoots.homeScreen: (context) => const HomeScreen(),
-        AppRoots.workoutPage: (context) => const WorkoutPage(),
+        AppRoots.homeScreen: (context) => HomeScreen(),
       },
     );
   }
