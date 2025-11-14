@@ -1,6 +1,7 @@
 import 'package:fitness_app/pages/workout/workout_screen.dart';
 import 'package:fitness_app/pages/workout/workout_summary_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WorkoutSummaryScreen extends StatelessWidget {
   final VoidCallback onBack;
@@ -19,76 +20,115 @@ class WorkoutSummaryScreen extends StatelessWidget {
     final durationString = "$durationMinutes min $durationSeconds sec";
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 100.h),
       children: [
-        const SizedBox(height: 24), // Space for real status bar
+        SizedBox(height: 24.h), // Space for real status bar
+
+        // Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
               onPressed: onBack,
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 22.sp),
             ),
-            const Text(
+            Text(
               "Workout summary",
-              style: TextStyle(color: Color(0xFFA1A1AA), fontSize: 18),
+              style: TextStyle(
+                color: Color(0xFFA1A1AA),
+                fontSize: 18.sp,
+              ),
             ),
-            const SizedBox(width: 48), // Placeholder for alignment
+            SizedBox(width: 48.w),
           ],
         ),
-        const SizedBox(height: 16),
-        const Text(
-          "Pushups",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+
+        SizedBox(height: 16.h),
+
+        Center(
+          child: Text(
+            "Pushups",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-        const SizedBox(height: 16),
-        const _SummaryProgressBar(progress: 0.7, label: "70%"), // Progress is hardcoded
-        const SizedBox(height: 24),
-        _SummaryStatRow(label: "Overall reps:", value: "${summaryData.totalReps} reps"),
-        _SummaryStatRow(label: "Overall sets:", value: "${summaryData.totalSets} sets"),
-        _SummaryStatRow(label: "Duration:", value: durationString),
-        _SummaryStatRow(label: "Total calories count:", value: "${summaryData.totalCalories} kcal"),
-        _SummaryStatRow(label: "TUT accuracy", value: "${summaryData.tutAccuracy}%"),
-        const SizedBox(height: 32),
-        const Text(
+
+        SizedBox(height: 16.h),
+
+        // Progress
+        SummaryProgressBar(progress: 0.7, label: "70%"),
+
+        SizedBox(height: 24.h),
+
+        SummaryStatRow(
+            label: "Overall reps:", value: "${summaryData.totalReps} reps"),
+        SummaryStatRow(
+            label: "Overall sets:", value: "${summaryData.totalSets} sets"),
+        SummaryStatRow(label: "Duration:", value: durationString),
+        SummaryStatRow(
+            label: "Total calories count:",
+            value: "${summaryData.totalCalories} kcal"),
+        SummaryStatRow(
+            label: "TUT accuracy", value: "${summaryData.tutAccuracy}%"),
+
+        SizedBox(height: 32.h),
+
+        Text(
           "Exercises completed",
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 12),
-        // This list is still hardcoded as per the design
-        const _ExerciseSummaryCard(),
-        const _ExerciseSummaryCard(),
-        const _ExerciseSummaryCard(),
+
+        SizedBox(height: 12.h),
+
+        ExerciseSummaryCard(),
+        ExerciseSummaryCard(),
+        ExerciseSummaryCard(),
       ],
     );
   }
 }
 
-class _SummaryStatRow extends StatelessWidget {
+class SummaryStatRow extends StatelessWidget {
   final String label;
   final String value;
-  const _SummaryStatRow({required this.label, required this.value});
+  const SummaryStatRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Color(0xFFA1A1AA), fontSize: 16)),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: TextStyle(color: Color(0xFFA1A1AA), fontSize: 16.sp),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _SummaryProgressBar extends StatelessWidget {
+class SummaryProgressBar extends StatelessWidget {
   final double progress;
   final String label;
-  const _SummaryProgressBar({required this.progress, required this.label});
+  const SummaryProgressBar({required this.progress, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -97,27 +137,36 @@ class _SummaryProgressBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Overall progress:", style: TextStyle(color: Color(0xFFD4D4D8), fontSize: 16)),
-            Text(label, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              "Overall progress:",
+              style: TextStyle(color: Color(0xFFD4D4D8), fontSize: 16.sp),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold),
+            ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Stack(
           children: [
             Container(
-              height: 15,
+              height: 15.h,
               decoration: BoxDecoration(
-                color: const Color(0xFF434343),
-                borderRadius: BorderRadius.circular(40),
+                color: Color(0xFF434343),
+                borderRadius: BorderRadius.circular(40.r),
               ),
             ),
             FractionallySizedBox(
               widthFactor: progress,
               child: Container(
-                height: 15,
+                height: 15.h,
                 decoration: BoxDecoration(
                   gradient: orangeGradient,
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: BorderRadius.circular(40.r),
                 ),
               ),
             ),
@@ -128,42 +177,49 @@ class _SummaryProgressBar extends StatelessWidget {
   }
 }
 
-class _ExerciseSummaryCard extends StatelessWidget {
-  const _ExerciseSummaryCard();
-  // In a real app, this would take an 'exercise' object
+class ExerciseSummaryCard extends StatelessWidget {
+  const ExerciseSummaryCard();
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF161512).withOpacity(0.8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      margin: const EdgeInsets.only(bottom: 8),
+      color: Color(0xFF161512).withOpacity(0.8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+      margin: EdgeInsets.only(bottom: 8.h),
       child: Container(
-        height: 86,
-        padding: const EdgeInsets.all(16),
-        child: const Row(
+        height: 105.h,
+        width: double.infinity,
+        padding: EdgeInsets.all(10.w),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Push ups", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(
+                  "Push ups",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold),
+                ),
                 Spacer(),
                 Row(
                   children: [
                     InfoItem(label: "Day:", value: "Monday"),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     InfoItem(label: "Duration:", value: "115"),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     InfoItem(label: "Exercise:", value: "5"),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     InfoItem(label: "TUT:", value: "70%"),
-                    SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     InfoItem(label: "Calories:", value: "65 kcal"),
                   ],
                 ),
               ],
             ),
-            Icon(Icons.check_circle, color: Color(0xFFFFA05C), size: 20),
+            Icon(Icons.check_circle, color: Color(0xFFFFA05C), size: 20.sp),
           ],
         ),
       ),

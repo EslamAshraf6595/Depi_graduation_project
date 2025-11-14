@@ -1,4 +1,4 @@
-import 'dart.async';
+import 'dart:async';
 import 'package:fitness_app/pages/workout/workout_complete_dialog.dart';
 import 'package:fitness_app/pages/workout/workout_screen.dart';
 import 'package:fitness_app/pages/workout/workout_summary_data.dart';
