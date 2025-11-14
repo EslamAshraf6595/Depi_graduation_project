@@ -83,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 AssetImage(AppAssets.gym),
                 size: 30,
               ),
-              label: "gym".tr()),
+              label: "goals".tr()),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline), label: "Workout".tr()),
+              icon: Icon(Icons.add_circle_outline), label: "workout".tr()),
           BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(AppAssets.calendar)),
               label: "calendar".tr()),
