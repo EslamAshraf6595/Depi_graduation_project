@@ -1,0 +1,4 @@
+#Wed Sep 17 06:43:10 EEST 2025
+base.0=C\:\\Users\\mosta\\OneDrive\\Desktop\\DEPI\\Cross Platform Mobile App\\final_project\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
