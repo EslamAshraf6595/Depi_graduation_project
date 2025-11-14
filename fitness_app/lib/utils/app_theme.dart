@@ -7,7 +7,7 @@ class AppTheme {
     //fontFamily: GoogleFonts.inter().fontFamily,
     primaryColor: AppColors.white,
 
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.white,
       elevation: 0,
       // centerTitle: true,
@@ -29,7 +29,7 @@ class AppTheme {
     primaryColor: AppColors.darkColor,
 
 
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkColor,
       // elevation: 0,
       // centerTitle: true,

@@ -11,7 +11,7 @@ class CreateNewPlan extends StatelessWidget {
         title: Text("create_new_plan".tr(),style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Text("Create New Plan Screen"),
       ),
     );
