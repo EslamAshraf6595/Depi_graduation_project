@@ -134,17 +134,20 @@ class HomePage extends StatelessWidget {
               SizedBox(height: 20.h),
 
               /// Create new plan button
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                decoration: BoxDecoration(
-                  color: AppColors.primeOrange,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Center(
-                  child: Text(
-                    "+ Create new plan",
-                    style: AppTextStyle.bold16white,
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(context, AppRoots.createPlan),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.primeOrange,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "+ Create new plan",
+                      style: AppTextStyle.bold16white,
+                    ),
                   ),
                 ),
               ),
