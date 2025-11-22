@@ -17,7 +17,6 @@ import 'utils/theme_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-
   runApp(
     MultiProvider(
       providers: [
