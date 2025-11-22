@@ -83,11 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: "goals".tr()),
           BottomNavigationBarItem(
-<<<<<<< HEAD
-              icon: Icon(Icons.add_circle_outline), label: "workout".tr()),
-=======
+
               icon: const Icon(Icons.add_circle_outline), label: "Workout".tr()),
->>>>>>> parent of 834b5d0 (Revert "workout pages")
+
           BottomNavigationBarItem(
               icon: const ImageIcon(AssetImage(AppAssets.calendar)),
               label: "calendar".tr()),

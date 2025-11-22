@@ -1,1 +1,0 @@
- C:\\Users\\mosta\\OneDrive\\Desktop\\DEPI\\Cross\ Platform\ Mobile\ App\\final_project\\.dart_tool\\flutter_build\\0b5c3ef944ce90874c9c17c5f31c9ab8\\native_assets.yaml: 
