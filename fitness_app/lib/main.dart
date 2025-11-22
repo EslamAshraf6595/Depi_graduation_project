@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'pages/home/homeScreen.dart';
 import 'utils/theme_provider.dart';
+import 'pages/workout/workout_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,13 +24,13 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: EasyLocalization(
-          supportedLocales: [
+          supportedLocales: const [
             Locale('en', 'US'),
             Locale('ar', 'EG'),
           ],
           path: 'assets/translations',
-          fallbackLocale: Locale('en', 'US'),
-          child: MyApp()),
+          fallbackLocale: const Locale('en', 'US'),
+          child: const MyApp()),
     ),
   );
 }
@@ -41,31 +42,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    return ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return MaterialApp(
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            initialRoute: AppRoots.homeScreen,
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: themeProvider.themeMode,
-            routes: {
-              AppRoots.homeScreen: (context) => HomeScreen(),
-              AppRoots.metricsScreen: (context) => MetricsScreen(),
-              AppRoots.boywheight: (context) => BodyWeightScreen(),
-              AppRoots.caloriesScreen: (context) => CaloriesScreen(),
-              AppRoots.timeTensionScreen: (context) => TimeUnderTensionScreen(),
-              AppRoots.golsScreen: (context) => GoalsScreen(),
-              AppRoots.createPlan: (context) => CreateNewPlan(),
-              AppRoots.formScreen: (context) => FormTrackingScreen(),
-            },
-          );
-        });
+    return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      initialRoute: AppRoots.homeScreen,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode:themeProvider.themeMode,
+      routes: {
+        AppRoots.homeScreen: (context) => HomeScreen(),
+      },
+    );
   }
 }
