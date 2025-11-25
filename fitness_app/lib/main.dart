@@ -7,7 +7,6 @@ import 'package:fitness_app/calories/ui/calories_screen.dart';
 import 'package:fitness_app/roots/app_roots.dart';
 import 'package:fitness_app/timeTension/ui/time_under_tension_screen.dart';
 import 'package:fitness_app/utils/app_theme.dart';
-
 import 'package:fitness_app/auth/login.dart';
 import 'package:fitness_app/profile/create_account.dart';
 import 'package:fitness_app/profile/create_account_1.dart';
@@ -15,18 +14,22 @@ import 'package:fitness_app/profile/create_account_2.dart';
 import 'package:fitness_app/profile/settings.dart';
 import 'package:fitness_app/profile/user_profile.dart';
 import 'package:fitness_app/splash.dart';
-
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
 import 'pages/home/homeScreen.dart';
 import 'utils/theme_provider.dart';
+
+// Import Hive service
+import 'package:fitness_app/data/services/hive_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  
+  // Initialize Hive with all models
+  await HiveService.init();
 
   runApp(
     MultiProvider(
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
           themeMode: themeProvider.themeMode,
 
           // Start on Splash (then navigate to home/login)
-          initialRoute:AppRoots.homeScreen,
+          initialRoute: AppRoots.homeScreen,
 
           routes: {
             // 🔹 Splash + Auth + Profile
@@ -88,8 +91,7 @@ class MyApp extends StatelessWidget {
             AppRoots.metricsScreen: (context) => MetricsScreen(),
             AppRoots.boywheight: (context) => BodyWeightScreen(),
             AppRoots.caloriesScreen: (context) => CaloriesScreen(),
-            AppRoots.timeTensionScreen: (context) =>
-                TimeUnderTensionScreen(),
+            AppRoots.timeTensionScreen: (context) => TimeUnderTensionScreen(),
             AppRoots.golsScreen: (context) => GoalsScreen(),
             AppRoots.createPlan: (context) => CreateNewPlan(),
             AppRoots.formScreen: (context) => FormTrackingScreen(),
