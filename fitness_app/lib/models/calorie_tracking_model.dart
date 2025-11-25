@@ -15,12 +15,13 @@ class CalorieTrackingModel extends HiveObject {
 
   @HiveField(3)
   String? source; // e.g., "Push ups", "Running", etc.
-
+ String? notes;
   CalorieTrackingModel({
     required this.id,
     required this.caloriesBurned,
     required this.date,
     this.source,
+     this.notes,
   });
 
   Map<String, dynamic> toJson() => {
@@ -28,6 +29,7 @@ class CalorieTrackingModel extends HiveObject {
         'caloriesBurned': caloriesBurned,
         'date': date.toIso8601String(),
         'source': source,
+        'notes': notes,
       };
 
   factory CalorieTrackingModel.fromJson(Map<String, dynamic> json) =>
@@ -36,5 +38,6 @@ class CalorieTrackingModel extends HiveObject {
         caloriesBurned: json['caloriesBurned'],
         date: DateTime.parse(json['date']),
         source: json['source'],
+        notes: json['notes'],
       );
 }
