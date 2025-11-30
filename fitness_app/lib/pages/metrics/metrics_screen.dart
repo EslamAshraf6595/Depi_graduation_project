@@ -1,3 +1,4 @@
+import 'package:fitness_app/pages/goal/goal_screen.dart';
 import 'package:fitness_app/pages/metrics/widgets/body_weight_page.dart';
 import 'package:fitness_app/pages/metrics/widgets/metric_card.dart';
 import 'package:fitness_app/roots/app_roots.dart';
@@ -48,7 +49,8 @@ class MetricsScreen extends StatelessWidget {
               subtitle: "List of all goals created.",
               iconPath: AppAssets.gols,
               onTap: () {
-                Navigator.of(context).pushNamed(AppRoots.golsScreen);
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => GoalScreen()));
               },
             ),
             MetricCard(
@@ -64,7 +66,6 @@ class MetricsScreen extends StatelessWidget {
               iconPath: AppAssets.tracing,
               // comingSoon: false,
               onTap: () {
-               
                 Navigator.of(context).pushNamed(AppRoots.formScreen);
               },
             ),

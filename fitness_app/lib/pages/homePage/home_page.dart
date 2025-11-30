@@ -60,9 +60,10 @@ class HomePage extends StatelessWidget {
                           ),
                           SizedBox(height: 8.h),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 4.h),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 1.h),
                             alignment: Alignment.center,
-                            width: 85.w,
+                            width: 98.w,
                             height: 20.h,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8.r),
@@ -119,6 +120,7 @@ class HomePage extends StatelessWidget {
                 exercises: "5",
                 buttonText: "Start workout",
                 buttonColor: AppColors.primeYellow,
+                context: context,
               ),
               SizedBox(height: 16.h),
               BuildWorkoutCard(
@@ -130,6 +132,7 @@ class HomePage extends StatelessWidget {
                 exercises: "5",
                 buttonText: "Redo workout",
                 buttonColor: AppColors.primeYellow,
+                context: context,
               ),
               SizedBox(height: 20.h),
 

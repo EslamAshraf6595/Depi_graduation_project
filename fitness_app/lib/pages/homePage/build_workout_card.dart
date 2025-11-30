@@ -1,3 +1,4 @@
+import 'package:fitness_app/roots/app_roots.dart';
 import 'package:fitness_app/utils/app_color.dart';
 import 'package:fitness_app/utils/app_text_style.dart';
 import 'package:fitness_app/pages/homePage/build_detail.dart';
@@ -13,6 +14,7 @@ Widget BuildWorkoutCard({
   required String exercises,
   required String buttonText,
   required Color buttonColor,
+  required BuildContext context,
 }) {
   return Container(
     width: 343.w,
@@ -44,19 +46,24 @@ Widget BuildWorkoutCard({
               BuildDetail("Reps", reps),
               BuildDetail("Sets", sets),
               BuildDetail("Exercise", exercises),
-              Container(
-                width: 90.w,
-                height: 30.h,
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                decoration: BoxDecoration(
-                  color: buttonColor,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Text(
-                  buttonText,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyle.meduim14white.copyWith(
-                    fontSize: 10.sp,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, AppRoots.workoutPage);
+                },
+                child: Container(
+                  width: 90.w,
+                  height: 30.h,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  decoration: BoxDecoration(
+                    color: buttonColor,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  child: Text(
+                    buttonText,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle.meduim14white.copyWith(
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ),
               ),

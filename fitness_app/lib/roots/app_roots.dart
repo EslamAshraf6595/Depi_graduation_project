@@ -7,6 +7,9 @@ class AppRoots {
   static const String timeTensionScreen = 'timeTensionScreen';
   static const String golsScreen = 'golsScreen';
   static const String formScreen = 'formScreen';
-  static const String workoutPage = '/workoutPage';
+  static const String workoutPage = 'workoutPage';
+  static const String exercisePage = 'create-exercise';
+  static const String superSet = 'super-set';
+  
 
 }

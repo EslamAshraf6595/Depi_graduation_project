@@ -1,5 +1,5 @@
 import 'package:fitness_app/calendar/calendar_screen.dart';
-import 'package:fitness_app/createPlan/create_new_plan.dart';
+import 'package:fitness_app/pages/goal/goal_screen.dart';
 import 'package:fitness_app/pages/homePage/home_page.dart';
 import 'package:fitness_app/pages/workOut/work_out.dart';
 import 'package:fitness_app/pages/workout/workout_page.dart';
@@ -10,7 +10,7 @@ class TabsList {
   static List<Widget> tabs = [
 
     HomePage(),
-    CreateNewPlan(),//goals
+    GoalScreen(),//goals
     WorkoutPage(),
     CalendarScreen(),
     UserProfile(),

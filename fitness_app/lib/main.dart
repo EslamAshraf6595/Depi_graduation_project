@@ -1,9 +1,12 @@
-import 'package:fitness_app/createPlan/create_new_plan.dart';
+import 'package:fitness_app/pages/goal/create_exercise_screen.dart';
+import 'package:fitness_app/pages/goal/create_plan_screen.dart';
+import 'package:fitness_app/pages/goal/goal_screen.dart';
+import 'package:fitness_app/pages/goal/super_set_screen.dart';
 import 'package:fitness_app/pages/form_tracking/ui/form_tracking_screen.dart';
-import 'package:fitness_app/pages/goals/ui/goals_screen.dart';
 import 'package:fitness_app/pages/metrics/widgets/body_weight_page.dart';
 import 'package:fitness_app/pages/metrics/metrics_screen.dart';
 import 'package:fitness_app/calories/ui/calories_screen.dart';
+import 'package:fitness_app/pages/workOut/workout_page.dart';
 import 'package:fitness_app/roots/app_roots.dart';
 import 'package:fitness_app/timeTension/ui/time_under_tension_screen.dart';
 import 'package:fitness_app/utils/app_theme.dart';
@@ -27,7 +30,7 @@ import 'package:fitness_app/data/services/hive_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  
+
   // Initialize Hive with all models
   await HiveService.init();
 
@@ -92,9 +95,13 @@ class MyApp extends StatelessWidget {
             AppRoots.boywheight: (context) => BodyWeightScreen(),
             AppRoots.caloriesScreen: (context) => CaloriesScreen(),
             AppRoots.timeTensionScreen: (context) => TimeUnderTensionScreen(),
-            AppRoots.golsScreen: (context) => GoalsScreen(),
-            AppRoots.createPlan: (context) => CreateNewPlan(),
+            AppRoots.golsScreen: (context) => GoalScreen(),
+            AppRoots.createPlan: (context) => GoalScreen(),
             AppRoots.formScreen: (context) => FormTrackingScreen(),
+            AppRoots.workoutPage: (context) => WorkoutPage(),
+            AppRoots.exercisePage: (context) => CreateExerciseScreen(),
+            AppRoots.createPlan:(context) => CreatePlanScreen(),
+            AppRoots.superSet:(context) => SuperSetScreen(),
           },
         );
       },
