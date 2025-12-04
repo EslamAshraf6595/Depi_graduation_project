@@ -44,6 +44,9 @@ dependencies:
   path_provider: ^2.1.5
   build_runner: ^2.4.13
   hive_generator: ^2.0.1
+  audioplayers: ^6.4.0
+  just_audio: ^0.9.46
+  audio_session: ^0.1.25
 
 dev_dependencies:
   flutter_test:
@@ -86,3 +89,4 @@ flutter:
   assets:
     - assets/images/
     - assets/translations/
+    - assets/music/

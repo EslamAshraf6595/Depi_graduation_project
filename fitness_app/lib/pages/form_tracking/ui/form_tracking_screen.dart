@@ -1,5 +1,8 @@
+import 'package:fitness_app/provider/exercise_provider.dart';
+import 'package:fitness_app/provider/workout_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class FormTrackingScreen extends StatelessWidget {
   const FormTrackingScreen({super.key});
@@ -16,7 +19,7 @@ class FormTrackingScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Form tracking",
+          "Form Tracking",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
@@ -27,39 +30,52 @@ class FormTrackingScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Track your form and technique.",
+              "Track your exercise form and technique.",
               style: TextStyle(color: Colors.grey, fontSize: 13),
             ),
             SizedBox(height: 20.h),
 
-            // Summary card
-            _buildSummaryCard(),
+            // SUMMARY CARD (Real-time)
+            Consumer<WorkoutProvider>(
+              builder: (context, workoutProvider, _) {
+                double overallAccuracy =
+                    workoutProvider.calculateOverallAccuracy();
+                return _buildSummaryCard(overallAccuracy);
+              },
+            ),
 
             SizedBox(height: 20.h),
 
-            // Exercise list
+            // EXERCISE HISTORY LIST (Real-time)
             Expanded(
-              child: ListView(
-                children: const [
-                  _FormCard(
-                    title: "Bench Press",
-                    accuracy: 0.85,
-                    feedback: "Great control, minor elbow flare.",
-                    date: "Oct 10, 2025",
-                  ),
-                  _FormCard(
-                    title: "Squats",
-                    accuracy: 0.75,
-                    feedback: "Keep back straight and depth consistent.",
-                    date: "Oct 8, 2025",
-                  ),
-                  _FormCard(
-                    title: "Deadlift",
-                    accuracy: 0.9,
-                    feedback: "Strong pull, excellent hip hinge.",
-                    date: "Oct 5, 2025",
-                  ),
-                ],
+              child: Consumer2<WorkoutProvider, ExerciseProvider>(
+                builder: (context, workoutProvider, exerciseProvider, _) {
+                  final history = workoutProvider.completedExercises;
+
+                  if (history.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No form data tracked yet.",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: history.length,
+                    itemBuilder: (context, index) {
+                      final ex = history[index];
+                      return _FormCard(
+                        title: ex.title ?? "",
+                        accuracy: ex.formAccuracy,
+                        feedback: ex.formFeedback.isEmpty
+                            ? "Keep practicing!"
+                            : ex.formFeedback,
+                        date: ex.completedDateStr,
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -68,7 +84,10 @@ class FormTrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCard() {
+  // =======================
+  // SUMMARY CARD WIDGET
+  // =======================
+  Widget _buildSummaryCard(double accuracy) {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -92,16 +111,16 @@ class FormTrackingScreen extends StatelessWidget {
                 width: 70.w,
                 height: 70.w,
                 child: CircularProgressIndicator(
-                  value: 0.83,
+                  value: accuracy,
                   strokeWidth: 8,
                   backgroundColor: Colors.grey.shade800,
                   valueColor:
                       const AlwaysStoppedAnimation<Color>(Colors.orange),
                 ),
               ),
-              const Text(
-                "83%",
-                style: TextStyle(
+              Text(
+                "${(accuracy * 100).toInt()}%",
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14),
@@ -111,10 +130,10 @@ class FormTrackingScreen extends StatelessWidget {
           SizedBox(width: 20.w),
 
           // Summary info
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "Overall Form Accuracy",
                   style: TextStyle(
@@ -122,7 +141,7 @@ class FormTrackingScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 6),
                 Text(
-                  "Based on your last 5 recorded workouts",
+                  "Based on your completed exercises",
                   style: TextStyle(color: Colors.grey, fontSize: 13),
                 ),
               ],
@@ -135,7 +154,7 @@ class FormTrackingScreen extends StatelessWidget {
 }
 
 // ============================
-// FORM TRACKING CARD WIDGET
+// FORM HISTORY CARD
 // ============================
 class _FormCard extends StatelessWidget {
   final String title;
@@ -213,7 +232,7 @@ class _FormCard extends StatelessWidget {
             ),
           ),
 
-          // Edit icon
+          // Edit icon (optional)
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.orange),
             onPressed: () {},

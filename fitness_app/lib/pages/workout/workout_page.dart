@@ -1,135 +1,165 @@
 import 'dart:async';
-import 'package:fitness_app/pages/workout/workout_complete_dialog.dart';
-import 'package:fitness_app/pages/workout/workout_screen.dart';
-import 'package:fitness_app/pages/workout/workout_summary_data.dart';
-import 'package:fitness_app/pages/workout/workout_summary_screen.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:fitness_app/models/exercise_model.dart';
+import 'package:fitness_app/pages/home/homeScreen.dart';
+import 'package:fitness_app/pages/workOut/workout_screen.dart';
+import 'package:fitness_app/pages/workOut/workout_summary_screen.dart';
+import 'package:fitness_app/provider/exercise_provider.dart';
+import 'package:fitness_app/provider/workout_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutPage extends StatefulWidget {
-  const WorkoutPage({super.key});
+  final ExerciseModel exercise;
+  const WorkoutPage({super.key, required this.exercise});
 
   @override
   State<WorkoutPage> createState() => _WorkoutPageState();
 }
 
 class _WorkoutPageState extends State<WorkoutPage> {
-  // Navigation
-  String _currentScreen = 'workout';
-  WorkoutSummaryData? _summaryData;
+  late int reps;
+  late int sets;
+  late int restTime;
+  late int weight;
 
-  // All workout state is "hoisted" here, so it doesn't reset!
-  int _reps = 10;
-  int _sets = 5;
-  int _completedSets = 3;
-  bool _isPlaying = false;
-  int _currentTime = 479; // 7:59 (Total workout time)
-  bool _isFavorite = true;
-  int _weight = 150;
-  int _restTime = 80;
-
+  late int _currentTime;
+  bool _showSummary = false;
   Timer? _timer;
+
+  late ExerciseProvider exerciseProvider;
+  late WorkoutProvider workoutProvider;
+
+  // AUDIO
+  late AudioPlayer _audioPlayer;
+  Duration _audioDuration = Duration.zero;
+  Duration _audioPosition = Duration.zero;
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+    workoutProvider = Provider.of<WorkoutProvider>(context, listen: false);
+
+    reps = widget.exercise.maxReps;
+    sets = widget.exercise.maxSets;
+    restTime = widget.exercise.rest;
+    weight = widget.exercise.weight;
+
+    _currentTime = int.tryParse(widget.exercise.duration ?? "0") ?? 0;
+
+    _audioPlayer = AudioPlayer();
+    _audioPlayer.setSource(AssetSource('music/music1.mp3'));
+
+    _audioPlayer.onDurationChanged
+        .listen((d) => setState(() => _audioDuration = d));
+    _audioPlayer.onPositionChanged
+        .listen((p) => setState(() => _audioPosition = p));
+  }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Always cancel timers
+    _timer?.cancel();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
-  void _handlePlayPause(bool play) {
-    setState(() {
-      _isPlaying = play;
-    });
+  // PLAY / PAUSE LOGIC
+  void _togglePlayPause() {
+    setState(() => _isPlaying = !_isPlaying);
+
     if (_isPlaying) {
-      _startTimer();
+      _audioPlayer.resume();
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (_currentTime > 0) {
+          setState(() => _currentTime--);
+        }
+      });
     } else {
+      _audioPlayer.pause();
       _timer?.cancel();
     }
   }
 
-  void _startTimer() {
+  void _saveWorkoutAndPop() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_currentTime > 0) {
-        setState(() {
-          _currentTime--;
-        });
-      } else {
-        // Timer hit 0
-        setState(() {
-          _isPlaying = false;
-        });
-        timer.cancel();
-        _showWorkoutCompleteDialog();
-      }
-    });
-  }
+    _audioPlayer.stop();
 
-  void _showWorkoutCompleteDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return WorkoutCompleteDialog(
-          onSeeSummary: () {
-            Navigator.of(dialogContext).pop(); // Close the dialog
-            _navigateToSummary();
-          },
-        );
-      },
+    workoutProvider.completeExercise(widget.exercise);
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      (route) => false,
     );
   }
 
-  void _navigateToSummary() {
-    setState(() {
-      _summaryData = WorkoutSummaryData(
-        totalReps: _reps * _completedSets,
-        totalSets: _completedSets,
-        totalDurationSeconds: 479 - _currentTime,
-      );
-      _currentScreen = 'summary';
-    });
+  // ----------------------------
+  // UPDATE EXERCISE PROGRESS
+  // ----------------------------
+  void _updateExerciseProgress() {
+    // Calculate doneReps and doneSets
+    widget.exercise.doneReps = widget.exercise.maxReps - reps;
+    widget.exercise.doneSets = widget.exercise.maxSets - sets;
+
+    // Update formAccuracy using progress getter
+    widget.exercise.formAccuracy = widget.exercise.progress;
+
+    // Notify providers
+    exerciseProvider.updateExercise(widget.exercise);
+    workoutProvider.calculateOverallAccuracy();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This is the container for *your* feature
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF353A40), Color(0xFF121416)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: _currentScreen == 'workout'
-            ? WorkoutScreen(
-          reps: _reps,
-          sets: _sets,
-          completedSets: _completedSets,
-          isPlaying: _isPlaying,
-          currentTime: _currentTime,
-          isFavorite: _isFavorite,
-          weight: _weight,
-          restTime: _restTime,
+      body: _showSummary
+          ? WorkoutSummaryScreen(
+              title: widget.exercise.title ?? "",
+              reps: reps,
+              sets: sets,
+              durationSeconds: _currentTime,
+              onBack: () => setState(() => _showSummary = false),
+              onSave: () => _saveWorkoutAndPop(),
+            )
+          : WorkoutScreen(
+              reps: reps,
+              sets: sets,
+              completedSets: widget.exercise.doneReps,
+              isPlaying: _isPlaying,
+              currentTime: _currentTime,
+              weight: weight,
+              restTime: restTime,
+              isFavorite: widget.exercise.isFavorite,
+              audioDuration: _audioDuration,
+              audioPosition: _audioPosition,
+              onTogglePlay: _togglePlayPause,
+              onSeekAudio: (d) => _audioPlayer.seek(d),
 
-          // Pass functions to *change* the state
-          onRepsChange: (val) => setState(() => _reps = val),
-          onSetsChange: (val) => setState(() => _sets = val),
-          onCompletedSetsChange: (val) => setState(() => _completedSets = val),
-          onIsPlayingChange: _handlePlayPause,
-          onCurrentTimeChange: (val) => setState(() => _currentTime = val),
-          onIsFavoriteChange: (val) => setState(() => _isFavorite = val),
-          onWeightChange: (val) => setState(() => _weight = val),
-          onRestTimeChange: (val) => setState(() => _restTime = val),
-          onSummary: _navigateToSummary,
-        )
-            : WorkoutSummaryScreen(
-          // This `onBack` logic is now simple!
-          onBack: () => setState(() => _currentScreen = 'workout'),
-          summaryData: _summaryData ?? WorkoutSummaryData(totalReps: 0, totalSets: 0, totalDurationSeconds: 0),
-        ),
-      ),
+              // -----------------------------
+              // DECREMENT / INCREMENT LOGIC
+              // -----------------------------
+              onRepsChange: (newVal) {
+                setState(() => reps = newVal);
+                _updateExerciseProgress();
+              },
+              onSetsChange: (newVal) {
+                setState(() => sets = newVal);
+                _updateExerciseProgress();
+              },
+              onRestChange: (newVal) {
+                setState(() => restTime = newVal);
+                _updateExerciseProgress();
+              },
+              onWeightIncrease: (newVal) => setState(() => weight = newVal),
+              onWeightDecrease: (newVal) => setState(() => weight = newVal),
+
+              onCurrentTimeChange: (_) => setState(() => _currentTime--),
+
+              onSummary: () => setState(() => _showSummary = true),
+            ),
     );
   }
 }

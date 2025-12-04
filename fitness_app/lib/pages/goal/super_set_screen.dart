@@ -1,3 +1,4 @@
+import 'package:fitness_app/models/exercise_model.dart';
 import 'package:fitness_app/pages/goal/create_plan_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +10,15 @@ class SuperSetScreen extends StatefulWidget {
 }
 
 class _SuperSetScreenState extends State<SuperSetScreen> {
-  String selectedGoal = "2 months";
+  String selectedGoal ='';
   int selectedType = 0;
+  int reps=0;
+  int sets=0;
+  int weight=0;
+  int rest=0;
+  int type=0;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +109,10 @@ class _SuperSetScreenState extends State<SuperSetScreen> {
               mainAxisSpacing: 12,
               childAspectRatio: 150 / 88,
               children: [
-                _goalBox("Reps:", "7 reps"),
-                _goalBox("Sets:", "10 sets"),
-                _goalBox("Weight:", "150 lbs"),
-                _goalBox("Rest timer:", "80s"),
+                _goalBox("Reps:", "${reps} reps"),
+                _goalBox("Sets:", "${sets} sets"),
+                _goalBox("Weight:", "${weight} lbs"),
+                _goalBox("Rest timer:", "${rest} seconds"),
               ],
             ),
             const SizedBox(height: 40),
@@ -130,11 +138,17 @@ class _SuperSetScreenState extends State<SuperSetScreen> {
                         borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreatePlanScreen()),
+                    ExerciseModel exercise = ExerciseModel(
+                      title: titleController.text,
+                      duration: selectedGoal,
+                      maxReps: reps,
+                      maxSets: sets,
+                      weight: weight,
+                      rest: rest,
+                      type: selectedType,
                     );
+
+                    Navigator.pop(context, exercise);
                   },
                   child: const Text("Next set",
                       style: TextStyle(
@@ -272,7 +286,8 @@ class _SuperSetScreenState extends State<SuperSetScreen> {
                 Column(
                   children: const [
                     Icon(Icons.arrow_drop_up, color: Colors.white70, size: 22),
-                    Icon(Icons.arrow_drop_down, color: Colors.white70, size: 22),
+                    Icon(Icons.arrow_drop_down,
+                        color: Colors.white70, size: 22),
                   ],
                 )
               ],

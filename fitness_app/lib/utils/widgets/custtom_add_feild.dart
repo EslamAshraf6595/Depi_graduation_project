@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Custtom_add_feild extends StatelessWidget {
+  final String value;
+  final TextEditingController? controller;
+  final VoidCallback? onAdd;
+
   Custtom_add_feild({
     super.key,
     required this.value,
+    this.controller,
+    this.onAdd,
   });
-  String value;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,30 +31,30 @@ class Custtom_add_feild extends StatelessWidget {
             value,
             style: AppTextStyle.meduim14white.copyWith(fontSize: 12.sp),
           ),
-          SizedBox(
-            width: 10.w,
-          ),
+          SizedBox(width: 10.w),
           Expanded(
             child: TextField(
+              controller: controller,
               style: TextStyle(color: Colors.white),
               cursorColor: AppColors.white,
               decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.sp),
-                      borderSide: BorderSide(
-                          color: AppColors.darkOrange, width: 1.5.w)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.sp),
-                      borderSide: BorderSide(
-                          color: AppColors.darkOrange, width: 1.5.w))),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.sp),
+                  borderSide: BorderSide(
+                      color: AppColors.darkOrange, width: 1.5.w),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.sp),
+                  borderSide: BorderSide(
+                      color: AppColors.darkOrange, width: 1.5.w),
+                ),
+              ),
             ),
           ),
-          SizedBox(
-            width: 10.w,
-          ),
+          SizedBox(width: 10.w),
           IconButton(
             icon: Icon(Icons.add, color: AppColors.primeOrange),
-            onPressed: () {},
+            onPressed: onAdd,
           ),
         ],
       ),

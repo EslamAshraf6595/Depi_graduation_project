@@ -131,7 +131,8 @@ class _CreatePlanScreenState extends State<CreatePlanScreen> {
             _outlinedButton("Create Exercise", () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const AddExerciseScreen()),
               );
             }),
           ],
@@ -184,8 +185,7 @@ class _CreatePlanScreenState extends State<CreatePlanScreen> {
                 ),
               ),
               child: Icon(icon,
-                  size: 32,
-                  color: isSelected ? Colors.orange : Colors.white70),
+                  size: 32, color: isSelected ? Colors.orange : Colors.white70),
             ),
           ),
           const SizedBox(height: 6),
@@ -259,8 +259,8 @@ class _CreatePlanScreenState extends State<CreatePlanScreen> {
   }
 
   // 🔸 Main exercise card styled black + orange glow (using _glowCard)
-  Widget _mainExerciseCard(
-      String title, String duration, String reps, String sets, String exercise) {
+  Widget _mainExerciseCard(String title, String duration, String reps,
+      String sets, String exercise) {
     return _glowCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,60 +306,63 @@ class _CreatePlanScreenState extends State<CreatePlanScreen> {
 
   // 🔸 Other exercise card (same wrapper)
 // 🔸 Other exercise card (same wrapper)
-Widget _otherExerciseCard(
-    String title, String duration, String reps, String sets, String exercise) {
-  return _glowCard(
-    child: Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20)),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _infoItem("Duration:", duration),
-                  _infoItem("Reps:", reps),
-                  _infoItem("Sets:", sets),
-                  _infoItem("Exercise:", exercise),
-                ],
-              ),
-            ],
+  Widget _otherExerciseCard(String title, String duration, String reps,
+      String sets, String exercise) {
+    return _glowCard(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 20)),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _infoItem("Duration:", duration),
+                    _infoItem("Reps:", reps),
+                    _infoItem("Sets:", sets),
+                    _infoItem("Exercise:", exercise),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
 
-        // ✅ Wrap the + icon with GestureDetector to navigate
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
-            );
-          },
-          child: const Icon(Icons.add, color: Colors.orange, size: 22),
-        ),
-      ],
-    ),
-  );
-}
-
+          // ✅ Wrap the + icon with GestureDetector to navigate
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddExerciseScreen()),
+              );
+            },
+            child: const Icon(Icons.add, color: Colors.orange, size: 22),
+          ),
+        ],
+      ),
+    );
+  }
 
   // 🔸 Info item
   Widget _infoItem(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        Text(label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12)),
         const SizedBox(height: 2),
         Text(value,
             style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 13)),
       ],
     );
   }
@@ -423,7 +426,9 @@ Widget _otherExerciseCard(
           onPressed: onPressed,
           child: Text(text,
               style: const TextStyle(
-                  color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold)),
         ),
       ),
     );
@@ -437,8 +442,7 @@ Widget _otherExerciseCard(
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.orange, width: 2),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         onPressed: onPressed,
         child: Text(text,

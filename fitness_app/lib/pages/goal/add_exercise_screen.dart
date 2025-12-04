@@ -1,5 +1,8 @@
-import 'package:fitness_app/roots/app_roots.dart';
+import 'package:fitness_app/provider/exercise_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../models/exercise_model.dart';
+
 
 class AddExerciseScreen extends StatefulWidget {
   const AddExerciseScreen({super.key});
@@ -47,26 +50,30 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             const SizedBox(height: 16),
             _inputField("Number of Exercises", _exerciseController, "e.g. 5"),
             const SizedBox(height: 30),
-
             _gradientButton("Save Exercise", () {
               if (_titleController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Please enter exercise details"),
-                    backgroundColor: Colors.red,
-                  ),
-
+                  const SnackBar(content: Text("Please enter exercise details"), backgroundColor: Colors.red),
                 );
                 return;
               }
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Exercise added successfully!"),
-                  backgroundColor: Colors.orange,
-                ),
+              final newExercise = ExerciseModel(
+                title: _titleController.text,
+                duration: _durationController.text,
+                maxReps: int.tryParse(_repsController.text) ?? 0,
+                maxSets: int.tryParse(_setsController.text) ?? 0,
+                numberOfExercises: int.tryParse(_exerciseController.text) ?? 1,
+                target: int.tryParse(_repsController.text) ?? 0,
               );
-              Navigator.pushNamed(context, AppRoots.workoutPage); // ✅ go back after saving
+
+              Provider.of<ExerciseProvider>(context, listen: false).addExercise(newExercise);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Exercise added successfully!"), backgroundColor: Colors.orange),
+              );
+
+              Navigator.pop(context);
             }),
           ],
         ),
@@ -74,34 +81,17 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     );
   }
 
-  // 🔸 Reusable input field
-  Widget _inputField(
-      String label, TextEditingController controller, String hint) {
+  Widget _inputField(String label, TextEditingController controller, String hint) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16)),
+        Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            gradient: const LinearGradient(
-              colors: [Color(0xFF161512), Color(0xFF000000)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: const LinearGradient(colors: [Color(0xFF161512), Color(0xFF000000)], begin: Alignment.topLeft, end: Alignment.bottomRight),
             border: Border.all(color: Colors.orange, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.orange.withOpacity(0.25),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
           ),
           child: TextField(
             controller: controller,
@@ -111,8 +101,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
               hintText: hint,
               hintStyle: const TextStyle(color: Colors.white54),
               border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
             ),
           ),
         ),
@@ -120,40 +109,25 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
     );
   }
 
-  // 🔸 Gradient button
   Widget _gradientButton(String text, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFA84C), Color(0xFFFF6B2C)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orange.withOpacity(0.25),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            )
-          ],
+          gradient: const LinearGradient(colors: [Color(0xFFFFA84C), Color(0xFFFF6B2C)]),
         ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+              ),
+            ),
           ),
-          onPressed: onPressed,
-          child: Text(text,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
         ),
       ),
     );

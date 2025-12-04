@@ -1,4 +1,5 @@
 import 'package:fitness_app/calendar/calendar_screen.dart';
+import 'package:fitness_app/models/exercise_model.dart';
 import 'package:fitness_app/pages/goal/goal_screen.dart';
 import 'package:fitness_app/pages/homePage/home_page.dart';
 import 'package:fitness_app/pages/workOut/work_out.dart';
@@ -11,7 +12,17 @@ class TabsList {
 
     HomePage(),
     GoalScreen(),//goals
-    WorkoutPage(),
+     WorkoutPage(
+  exercise: ExerciseModel(
+    title: "Default Exercise",
+    duration: "60",
+    maxReps: 10,
+    maxSets: 3,
+    weight: 0,
+    rest: 30,
+  ),
+),
+
     CalendarScreen(),
     UserProfile(),
     

@@ -3,14 +3,36 @@ import 'package:fitness_app/utils/app_assets.dart';
 import 'package:fitness_app/utils/app_color.dart';
 import 'package:fitness_app/utils/app_text_style.dart';
 import 'package:fitness_app/pages/homePage/build_workout_card.dart';
+import 'package:fitness_app/pages/workOut/workout_page.dart';
+import 'package:fitness_app/provider/exercise_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:fitness_app/models/exercise_model.dart';
 
-class HomePage extends StatelessWidget {
-  static double progress = 70;
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ExerciseProvider>(context);
+
+    // Calculate overall progress based on done reps and sets of all exercises
+    double progressValue = 0.0;
+    if (provider.exercises.isNotEmpty) {
+      double totalProgress = 0;
+      for (var ex in provider.exercises) {
+        final target = ex.maxReps * ex.maxSets;
+        if (target > 0) {
+          totalProgress += ex.doneReps / target; // doneReps reflects actual work done
+        }
+      }
+      progressValue = (totalProgress / provider.exercises.length).clamp(0.0, 1.0);
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
@@ -19,6 +41,7 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // --- HEADER ---
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 margin: EdgeInsets.symmetric(vertical: 16.h),
@@ -86,7 +109,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
 
-              /// Progress
+              /// OVERALL PROGRESS
               Row(
                 children: [
                   Text(
@@ -95,14 +118,14 @@ class HomePage extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    "${progress.toInt()}%",
+                    "${(progressValue * 100).toInt()}%",
                     style: AppTextStyle.meduim16grey,
                   ),
                 ],
               ),
               SizedBox(height: 8.h),
               LinearProgressIndicator(
-                value: progress / 100,
+                value: progressValue,
                 backgroundColor: AppColors.grey,
                 valueColor: AlwaysStoppedAnimation(AppColors.primeYellow),
                 minHeight: 8.h,
@@ -110,30 +133,52 @@ class HomePage extends StatelessWidget {
               ),
               SizedBox(height: 24.h),
 
-              /// Workout Cards
-              BuildWorkoutCard(
-                title: "Your next workout:",
-                workoutName: "Push ups",
-                duration: "30 minutes",
-                reps: "115",
-                sets: "15",
-                exercises: "5",
-                buttonText: "Start workout",
-                buttonColor: AppColors.primeYellow,
-                context: context,
-              ),
-              SizedBox(height: 16.h),
-              BuildWorkoutCard(
-                title: "Your last workout:",
-                workoutName: "Pull ups",
-                duration: "30 minutes",
-                reps: "115",
-                sets: "15",
-                exercises: "5",
-                buttonText: "Redo workout",
-                buttonColor: AppColors.primeYellow,
-                context: context,
-              ),
+              /// --- DYNAMIC WORKOUT CARDS ---
+              provider.exercises.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 80.h),
+                        child: Text(
+                          "No workouts yet.\nAdd your first exercise!",
+                          textAlign: TextAlign.center,
+                          style: AppTextStyle.meduim16grey,
+                        ),
+                      ),
+                    )
+                  : Column(
+                      children: provider.exercises.map((exercise) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 16.h),
+                          child: BuildWorkoutCard(
+                            title: "Your next workout:",
+                            workoutName: exercise.title ?? "",
+                            duration: int.parse(exercise.duration ?? "0"),
+                            reps: exercise.maxReps,
+                            sets: exercise.maxSets,
+                            exercises: provider.exercises.length,
+                            buttonText: "Start workout",
+                            buttonColor: AppColors.primeYellow,
+                            context: context,
+                            onPressed: () async {
+                              final finished = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      WorkoutPage(exercise: exercise),
+                                ),
+                              );
+                              if (finished == true) {
+                                setState(() {
+                                  // Updates progress dynamically using doneReps
+                                  provider.completeExercise(exercise);
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+
               SizedBox(height: 20.h),
 
               /// Create new plan button

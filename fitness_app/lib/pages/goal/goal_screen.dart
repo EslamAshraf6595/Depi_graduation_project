@@ -1,62 +1,22 @@
-import 'package:fitness_app/pages/goal/create_exercise_screen.dart';
-import 'package:fitness_app/pages/goal/edit_exercise_screen.dart';
-import 'package:fitness_app/roots/app_roots.dart';
+import 'package:fitness_app/pages/goal/add_exercise_screen.dart';
+import 'package:fitness_app/provider/exercise_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class GoalScreen extends StatefulWidget {
   const GoalScreen({super.key});
 
   @override
-  State<GoalScreen> createState() => _GoalsScreenState();
+  State<GoalScreen> createState() => _GoalScreenState();
 }
 
-class _GoalsScreenState extends State<GoalScreen> {
+class _GoalScreenState extends State<GoalScreen> {
   bool isPlansTabSelected = true;
-
-  List<Map<String, String>> _exercises = [
-    {
-      "title": "Push ups",
-      "duration": "30 minutes",
-      "reps": "115",
-      "sets": "15",
-      "exercise": "5",
-      "target": "2000"
-    },
-    {
-      "title": "Pull ups",
-      "duration": "20 minutes",
-      "reps": "90",
-      "sets": "10",
-      "exercise": "4",
-      "target": "1000"
-    },
-    {
-      "title": "Squats",
-      "duration": "15 minutes",
-      "reps": "60",
-      "sets": "12",
-      "exercise": "3",
-      "target": "1500"
-    },
-  ];
-
-  double _calculateOverallProgress() {
-    if (_exercises.isEmpty) return 0;
-    double totalProgress = 0;
-    for (var ex in _exercises) {
-      final reps = int.tryParse(ex['reps'] ?? '') ?? 0;
-      final sets = int.tryParse(ex['sets'] ?? '') ?? 0;
-      final target = int.tryParse(ex['target'] ?? '') ?? 1000;
-      final exerciseProgress = (reps * sets) / target;
-      totalProgress += exerciseProgress.clamp(0, 1);
-    }
-    return (totalProgress / _exercises.length) * 100;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final progressPercent = _calculateOverallProgress();
+    final exercises = Provider.of<ExerciseProvider>(context).exercises;
+    final progressPercent = Provider.of<ExerciseProvider>(context).overallProgress;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
@@ -70,10 +30,7 @@ class _GoalsScreenState extends State<GoalScreen> {
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -92,8 +49,7 @@ class _GoalsScreenState extends State<GoalScreen> {
               child: LinearProgressIndicator(
                 value: (progressPercent / 100).clamp(0.0, 1.0),
                 minHeight: 10,
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
                 backgroundColor: Colors.white24,
               ),
             ),
@@ -102,218 +58,126 @@ class _GoalsScreenState extends State<GoalScreen> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPlansTabSelected = true;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color:
-                            isPlansTabSelected ? Colors.orange : Colors.black,
-                        borderRadius: BorderRadius.circular(6),
-                        border: isPlansTabSelected
-                            ? null
-                            : Border.all(color: Colors.orange.withOpacity(0.5)),
-                        boxShadow: isPlansTabSelected
-                            ? [
-                                BoxShadow(
-                                  color: Colors.orange.withOpacity(0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                )
-                              ]
-                            : [],
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Plans",
-                          style: TextStyle(
-                              color: isPlansTabSelected
-                                  ? Colors.white
-                                  : Colors.white70,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
+                    onTap: () => setState(() => isPlansTabSelected = true),
+                    child: _tabButton("Plans", isPlansTabSelected),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPlansTabSelected = false;
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color:
-                            !isPlansTabSelected ? Colors.orange : Colors.black,
-                        borderRadius: BorderRadius.circular(6),
-                        border: !isPlansTabSelected
-                            ? null
-                            : Border.all(color: Colors.orange.withOpacity(0.5)),
-                        boxShadow: !isPlansTabSelected
-                            ? [
-                                BoxShadow(
-                                  color: Colors.orange.withOpacity(0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                )
-                              ]
-                            : [],
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Exercises",
-                          style: TextStyle(
-                              color: !isPlansTabSelected
-                                  ? Colors.white
-                                  : Colors.white70,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
+                    onTap: () => setState(() => isPlansTabSelected = false),
+                    child: _tabButton("Exercises", !isPlansTabSelected),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            if (isPlansTabSelected) ...[
-              GestureDetector(
-                onTap: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CreateExerciseScreen()),
-                  );
-                  if (result != null && result is Map<String, String>) {
-                    setState(() {
-                      _exercises.add(result);
-                    });
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFFA84C), Color(0xFFFF6B2C)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.add, color: Colors.white, size: 22),
-                      SizedBox(width: 8),
-                      Text(
-                        "Create new plan",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: Colors.orange.withOpacity(0.7), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orange.withOpacity(0.4),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const TextField(
-                  style: TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: "Search plans or exercises",
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: InputBorder.none,
-                    suffixIcon: Icon(Icons.search, color: Colors.white54),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _exercises.length,
-                  itemBuilder: (context, index) {
-                    final ex = _exercises[index];
-                    return Column(
-                      children: [
-                        _exerciseCard(
-                          ex['title']!,
-                          ex['duration']!,
-                          ex['reps']!,
-                          ex['sets']!,
-                          ex['exercise']!,
-                          index,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    );
-                  },
-                ),
-              )
-            ] else ...[
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _exercises.length,
-                  itemBuilder: (context, index) {
-                    final ex = _exercises[index];
-                    return Column(
-                      children: [
-                        _exerciseCard(
-                          ex['title']!,
-                          ex['duration']!,
-                          ex['reps']!,
-                          ex['sets']!,
-                          ex['exercise']!,
-                          index,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                    );
-                  },
-                ),
-              )
-            ]
+            if (isPlansTabSelected)
+              _plansTab(exercises)
+            else
+              _exercisesTab(exercises),
           ],
         ),
       ),
     );
   }
 
-  Widget _exerciseCard(String title, String duration, String reps, String sets,
-      String exercise, int index) {
-    final int repsNum = int.tryParse(reps) ?? 0;
-    final int setsNum = int.tryParse(sets) ?? 0;
-    final int targetNum =
-        int.tryParse(_exercises[index]['target'] ?? '') ?? 1000;
-    final double progress = ((repsNum * setsNum) / targetNum).clamp(0.0, 1.0);
+  Widget _tabButton(String text, bool isSelected) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.orange : Colors.black,
+        borderRadius: BorderRadius.circular(6),
+        border: isSelected ? null : Border.all(color: Colors.orange.withOpacity(0.5)),
+        boxShadow: isSelected
+            ? [BoxShadow(color: Colors.orange.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 3))]
+            : [],
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: isSelected ? Colors.white : Colors.white70,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  Widget _plansTab(List exercises) {
+    return Expanded(
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
+              );
+              if (result != null && mounted) setState(() {});
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFA84C), Color(0xFFFF6B2C)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.add, color: Colors.white, size: 22),
+                  SizedBox(width: 8),
+                  Text(
+                    "Create new plan",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              itemCount: exercises.length,
+              itemBuilder: (context, index) {
+                final ex = exercises[index];
+                return Column(
+                  children: [
+                    _exerciseCard(ex, index),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _exercisesTab(List exercises) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: exercises.length,
+        itemBuilder: (context, index) {
+          final ex = exercises[index];
+          return Column(
+            children: [
+              _exerciseCard(ex, index),
+              const SizedBox(height: 16),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _exerciseCard(ex, int index) {
+    final double progress = ex.progress;
 
     return Container(
       decoration: BoxDecoration(
@@ -323,13 +187,6 @@ class _GoalsScreenState extends State<GoalScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.orange.withOpacity(0.25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Container(
         width: double.infinity,
@@ -337,10 +194,7 @@ class _GoalsScreenState extends State<GoalScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: RadialGradient(
-            colors: [
-              const Color(0xFFEA8945).withOpacity(0.3),
-              const Color(0xFF0E0E0E),
-            ],
+            colors: [const Color(0xFFEA8945).withOpacity(0.3), const Color(0xFF0E0E0E)],
             center: Alignment.topRight,
             radius: 1.5,
           ),
@@ -351,37 +205,10 @@ class _GoalsScreenState extends State<GoalScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold)),
+                Text(ex.title ?? "", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                 GestureDetector(
                   onTap: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditExerciseScreen(
-                          title: title,
-                          duration: duration,
-                          reps: reps,
-                          sets: sets,
-                          exercise: exercise,
-                        ),
-                      ),
-                    );
-                    if (result != null && mounted) {
-                      setState(() {
-                        _exercises[index] = {
-                          'title': result['title'],
-                          'duration': result['duration'],
-                          'reps': result['reps'],
-                          'sets': result['sets'],
-                          'exercise': result['exercise'],
-                          'target': _exercises[index]['target'] ?? '1000',
-                        };
-                      });
-                    }
+                    // Edit logic can be added here
                   },
                   child: const Icon(Icons.edit, color: Colors.orange, size: 20),
                 ),
@@ -391,10 +218,10 @@ class _GoalsScreenState extends State<GoalScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _infoItem("Duration:", duration),
-                _infoItem("Reps:", reps),
-                _infoItem("Sets:", sets),
-                _infoItem("Exercise:", exercise),
+                _infoItem("Duration:", ex.duration ?? ""),
+                _infoItem("Reps:", ex.maxReps.toString()),
+                _infoItem("Sets:", ex.maxSets.toString()),
+                _infoItem("Exercise:", ex.numberOfExercises.toString()),
               ],
             ),
             const SizedBox(height: 12),
@@ -405,15 +232,12 @@ class _GoalsScreenState extends State<GoalScreen> {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color(0xFFFF7F32),
-                ),
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
                 backgroundColor: Colors.white24,
               ),
             ),
             const SizedBox(height: 4),
-            Text("${(progress * 100).toStringAsFixed(0)}%",
-                style: const TextStyle(color: Colors.white54, fontSize: 12)),
+            Text("${(progress * 100).toStringAsFixed(0)}%", style: const TextStyle(color: Colors.white54, fontSize: 12)),
           ],
         ),
       ),
@@ -424,14 +248,9 @@ class _GoalsScreenState extends State<GoalScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(color: Colors.white70, fontSize: 14)),
+        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 14)),
         const SizedBox(height: 4),
-        Text(value,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14)),
+        Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
       ],
     );
   }

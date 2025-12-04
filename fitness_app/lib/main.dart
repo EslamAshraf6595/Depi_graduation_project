@@ -1,3 +1,4 @@
+import 'package:fitness_app/models/exercise_model.dart';
 import 'package:fitness_app/pages/goal/create_exercise_screen.dart';
 import 'package:fitness_app/pages/goal/create_plan_screen.dart';
 import 'package:fitness_app/pages/goal/goal_screen.dart';
@@ -7,6 +8,9 @@ import 'package:fitness_app/pages/metrics/widgets/body_weight_page.dart';
 import 'package:fitness_app/pages/metrics/metrics_screen.dart';
 import 'package:fitness_app/calories/ui/calories_screen.dart';
 import 'package:fitness_app/pages/workOut/workout_page.dart';
+import 'package:fitness_app/provider/exercise_provider.dart';
+import 'package:fitness_app/provider/plan_provider.dart';
+import 'package:fitness_app/provider/workout_provider.dart';
 import 'package:fitness_app/roots/app_roots.dart';
 import 'package:fitness_app/timeTension/ui/time_under_tension_screen.dart';
 import 'package:fitness_app/utils/app_theme.dart';
@@ -22,9 +26,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'pages/home/homeScreen.dart';
-import 'utils/theme_provider.dart';
-
-// Import Hive service
+import '../provider/theme_provider.dart';
 import 'package:fitness_app/data/services/hive_service.dart';
 
 void main() async {
@@ -32,12 +34,15 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   // Initialize Hive with all models
-  await HiveService.init();
+  // await HiveService.init();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => ExerciseProvider()),
+        ChangeNotifierProvider(create: (_) => PlanProvider()),
+         ChangeNotifierProvider(create: (_) => WorkoutProvider()),
       ],
       child: EasyLocalization(
         supportedLocales: const [
@@ -54,7 +59,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -98,10 +102,26 @@ class MyApp extends StatelessWidget {
             AppRoots.golsScreen: (context) => GoalScreen(),
             AppRoots.createPlan: (context) => GoalScreen(),
             AppRoots.formScreen: (context) => FormTrackingScreen(),
-            AppRoots.workoutPage: (context) => WorkoutPage(),
+            AppRoots.workoutPage: (context) {
+              final args = ModalRoute.of(context)!.settings.arguments;
+
+              // If no arguments passed, fallback to default exercise
+              final exercise = args is ExerciseModel
+                  ? args
+                  : ExerciseModel(
+                      title: "Default Exercise",
+                      maxReps: 10,
+                      maxSets: 3,
+                      weight: 0,
+                      rest: 30,
+                    );
+
+              return WorkoutPage(exercise: exercise);
+            },
+
             AppRoots.exercisePage: (context) => CreateExerciseScreen(),
-            AppRoots.createPlan:(context) => CreatePlanScreen(),
-            AppRoots.superSet:(context) => SuperSetScreen(),
+            // AppRoots.createPlan: (context) => CreatePlanScreen(),
+            AppRoots.superSet: (context) => SuperSetScreen(),
           },
         );
       },

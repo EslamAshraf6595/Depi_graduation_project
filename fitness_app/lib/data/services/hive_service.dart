@@ -1,69 +1,69 @@
-import 'package:fitness_app/models/calorie_tracking_model.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:fitness_app/models/user_model.dart';
-import 'package:fitness_app/models/workout_model.dart';
-import 'package:fitness_app/models/plan_model.dart';
-import 'package:fitness_app/models/calendar_session_model.dart';
-import 'package:fitness_app/models/goal_model.dart';
-import 'package:fitness_app/models/body_weight_model.dart';
-import 'package:fitness_app/models/settings_model.dart';
+// import 'package:fitness_app/models/calorie_tracking_model.dart';
+// import 'package:hive_flutter/hive_flutter.dart';
+// import 'package:fitness_app/models/user_model.dart';
+// import 'package:fitness_app/models/workout_model.dart';
+// import 'package:fitness_app/models/plan_model.dart';
+// import 'package:fitness_app/models/calendar_session_model.dart';
+// import 'package:fitness_app/models/goal_model.dart';
+// import 'package:fitness_app/models/body_weight_model.dart';
+// import 'package:fitness_app/models/settings_model.dart';
  
 
- class HiveService {
-  // Box names
-  static const String userBoxName = 'users_box';
-  static const String workoutBoxName = 'workouts_box';
-  static const String planBoxName = 'plans_box';
-  static const String caloriesBoxName = 'calories_box';
-  static const String calendarBoxName = 'calendar_box';
-  static const String goalBoxName = 'goals_box';
-  static const String bodyWeightBoxName = 'body_weight_box';
-  static const String settingsBoxName = 'settings_box';
+//  class HiveService {
+//   // Box names
+//   static const String userBoxName = 'users_box';
+//   static const String workoutBoxName = 'workouts_box';
+//   static const String planBoxName = 'plans_box';
+//   static const String caloriesBoxName = 'calories_box';
+//   static const String calendarBoxName = 'calendar_box';
+//   static const String goalBoxName = 'goals_box';
+//   static const String bodyWeightBoxName = 'body_weight_box';
+//   static const String settingsBoxName = 'settings_box';
 
-  static Future<void> init() async {
-    await Hive.initFlutter();
+//   static Future<void> init() async {
+//     await Hive.initFlutter();
 
-    // Register all adapters
-    Hive.registerAdapter(UserModelAdapter());
-    Hive.registerAdapter(WorkoutModelAdapter());
-    Hive.registerAdapter(PlanModelAdapter());
-    Hive.registerAdapter(CalendarSessionAdapter());
-    Hive.registerAdapter(GoalModelAdapter());
-    Hive.registerAdapter(GoalTypeAdapter());
-    Hive.registerAdapter(BodyWeightModelAdapter());
-    Hive.registerAdapter(SettingsModelAdapter());
-    Hive.registerAdapter(CalorieTrackingModelAdapter()); // ✅ FIX
+//     // Register all adapters
+//     Hive.registerAdapter(UserModelAdapter());
+//     Hive.registerAdapter(WorkoutModelAdapter());
+//     Hive.registerAdapter(PlanModelAdapter());
+//     Hive.registerAdapter(CalendarSessionAdapter());
+//     Hive.registerAdapter(GoalModelAdapter());
+//     Hive.registerAdapter(GoalTypeAdapter());
+//     Hive.registerAdapter(BodyWeightModelAdapter());
+//     Hive.registerAdapter(SettingsModelAdapter());
+//     Hive.registerAdapter(CalorieTrackingModelAdapter()); // ✅ FIX
 
-    // Open all boxes
-    await Future.wait([
-      Hive.openBox<UserModel>(userBoxName),
-      Hive.openBox<WorkoutModel>(workoutBoxName),
-      Hive.openBox<PlanModel>(planBoxName),
-      Hive.openBox<CalendarSession>(calendarBoxName),
-      Hive.openBox<GoalModel>(goalBoxName),
-      Hive.openBox<BodyWeightModel>(bodyWeightBoxName),
-      Hive.openBox<CalorieTrackingModel>(caloriesBoxName), // ✅ FIX
-      Hive.openBox<SettingsModel>(settingsBoxName),
-    ]);
-  }
+//     // Open all boxes
+//     await Future.wait([
+//       Hive.openBox<UserModel>(userBoxName),
+//       Hive.openBox<WorkoutModel>(workoutBoxName),
+//       Hive.openBox<PlanModel>(planBoxName),
+//       Hive.openBox<CalendarSession>(calendarBoxName),
+//       Hive.openBox<GoalModel>(goalBoxName),
+//       Hive.openBox<BodyWeightModel>(bodyWeightBoxName),
+//       Hive.openBox<CalorieTrackingModel>(caloriesBoxName), // ✅ FIX
+//       Hive.openBox<SettingsModel>(settingsBoxName),
+//     ]);
+//   }
 
-  static Box<T> getBox<T>(String boxName) {
-    return Hive.box<T>(boxName);
-  }
+//   static Box<T> getBox<T>(String boxName) {
+//     return Hive.box<T>(boxName);
+//   }
 
-  static Future<void> closeAll() async {
-    await Hive.close();
-  }
+//   static Future<void> closeAll() async {
+//     await Hive.close();
+//   }
 
-  static Future<void> clearAllData() async {
-    await Future.wait([
-      Hive.box<UserModel>(userBoxName).clear(),
-      Hive.box<WorkoutModel>(workoutBoxName).clear(),
-      Hive.box<PlanModel>(planBoxName).clear(),
-      Hive.box<CalendarSession>(calendarBoxName).clear(),
-      Hive.box<GoalModel>(goalBoxName).clear(),
-      Hive.box<BodyWeightModel>(bodyWeightBoxName).clear(),
-      Hive.box<CalorieTrackingModel>(caloriesBoxName).clear(), // ✅ FIX
-    ]);
-  }
-}
+//   static Future<void> clearAllData() async {
+//     await Future.wait([
+//       Hive.box<UserModel>(userBoxName).clear(),
+//       Hive.box<WorkoutModel>(workoutBoxName).clear(),
+//       Hive.box<PlanModel>(planBoxName).clear(),
+//       Hive.box<CalendarSession>(calendarBoxName).clear(),
+//       Hive.box<GoalModel>(goalBoxName).clear(),
+//       Hive.box<BodyWeightModel>(bodyWeightBoxName).clear(),
+//       Hive.box<CalorieTrackingModel>(caloriesBoxName).clear(), // ✅ FIX
+//     ]);
+//   }
+// }

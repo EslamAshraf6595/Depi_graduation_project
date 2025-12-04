@@ -9,8 +9,15 @@ class CreateExerciseScreen extends StatefulWidget {
 }
 
 class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
-  String selectedGoal = "2 months";
+  final List<String> goals = ["1 month", "2 months", "3 months"];
+  String? selectedGoal;
   int selectedType = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGoal = goals.isNotEmpty ? goals.first : null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,52 +52,30 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
             ),
             const SizedBox(height: 30),
 
-            const Text("Regular exercise",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18)),
-            const SizedBox(height: 12),
-
-            // 🔹 Title input with glow
-            _glowBox(
-              child: const TextField(
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: "Enter a title for the exercise",
-                  hintStyle: TextStyle(color: Colors.white54),
-                  border: InputBorder.none,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                ),
+            const Text(
+              "Set your goal",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
 
-            Row(
-              children: [
-                const Text("Set Goal",
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
-                const SizedBox(width: 6),
-                Icon(Icons.info_outline, size: 18, color: Colors.white54),
-              ],
-            ),
-            const SizedBox(height: 10),
-
-            // 🔹 Dropdown with glow
+            // 🔹 Dropdown for goal
             _glowBox(
               child: DropdownButtonFormField<String>(
                 value: selectedGoal,
                 dropdownColor: Colors.black,
                 style: const TextStyle(color: Colors.white),
-                items: ["1 month", "2 months", "3 months"]
+                items: goals
                     .map((goal) => DropdownMenuItem(
                           value: goal,
                           child: Text(goal),
                         ))
                     .toList(),
                 onChanged: (value) {
-                  setState(() => selectedGoal = value!);
+                  setState(() => selectedGoal = value);
                 },
                 decoration: const InputDecoration(border: InputBorder.none),
               ),
@@ -131,20 +116,22 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                         builder: (context) => const SuperSetScreen()),
                   );
                 },
-                child: const Text("Create workout",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                child: const Text(
+                  "Create workout",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  // 🔸 Shared GlowBox (used for Regular exercise & Set Goal only)
+  // 🔸 Shared GlowBox
   Widget _glowBox({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
@@ -222,7 +209,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
     );
   }
 
-  // 🔸 GoalBox styled like design
+  // 🔸 GoalBox
   Widget _goalBox(String label, String value) {
     return Container(
       width: 150,
@@ -274,7 +261,8 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                 Column(
                   children: const [
                     Icon(Icons.arrow_drop_up, color: Colors.white70, size: 22),
-                    Icon(Icons.arrow_drop_down, color: Colors.white70, size: 22),
+                    Icon(Icons.arrow_drop_down,
+                        color: Colors.white70, size: 22),
                   ],
                 )
               ],

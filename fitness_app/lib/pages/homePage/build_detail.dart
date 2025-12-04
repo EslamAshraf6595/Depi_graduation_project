@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Widget BuildDetail(
   String label,
-  String value,
+  dynamic value,
 ) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,

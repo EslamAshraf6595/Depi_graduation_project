@@ -1,9 +1,20 @@
+import 'package:fitness_app/models/exercise_model.dart';
+import 'package:fitness_app/provider/workout_provider.dart';
 import 'package:fitness_app/utils/widgets/custtom_add_feild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class CaloriesScreen extends StatelessWidget {
+class CaloriesScreen extends StatefulWidget {
   const CaloriesScreen({super.key});
+
+  @override
+  State<CaloriesScreen> createState() => _CaloriesScreenState();
+}
+
+class _CaloriesScreenState extends State<CaloriesScreen> {
+  final TextEditingController caloriesController = TextEditingController();
+  static const int maxCalories = 3000;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +37,16 @@ class CaloriesScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Column(
           children: [
-            // Total Calories Circular Indicator
-            _buildCaloriesIndicator(),
-
+            Consumer<WorkoutProvider>(
+              builder: (context, workoutProvider, _) {
+                int totalCalories = workoutProvider.exercises
+                    .fold(0, (sum, ex) => sum + ex.calories);
+                totalCalories =
+                    totalCalories > maxCalories ? maxCalories : totalCalories;
+                return _buildCaloriesIndicator(totalCalories);
+              },
+            ),
             SizedBox(height: 16.h),
-
             const Text(
               "🔥 Total Calories burned",
               style:
@@ -40,39 +56,62 @@ class CaloriesScreen extends StatelessWidget {
               "These numbers are based on distance and weight",
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
-
             SizedBox(height: 20.h),
-
-            // Add Calories Input
             Custtom_add_feild(
               value: "Add Calories",
+              controller: caloriesController,
+              onAdd: () {
+                if (caloriesController.text.isNotEmpty) {
+                  int cal = int.tryParse(caloriesController.text) ?? 0;
+                  if (cal > 0) {
+                    Provider.of<WorkoutProvider>(context, listen: false)
+                        .addExercise(
+                      ExerciseModel(
+                        title: "Custom Entry",
+                        calories: cal,
+                        reps: 0,
+                        maxReps: 0,
+                        rest: 0,
+                        weight: 0,
+                        maxSets: 0,
+                        doneReps: 0,
+                        formAccuracy: 0.0,
+                        completedDateStr: "",
+                      ),
+                    );
+                    caloriesController.clear();
+                  }
+                }
+              },
             ),
-
             SizedBox(height: 30.h),
-
-            // Week Data
             Expanded(
-              child: ListView(
-                children: const [
-                  _WorkoutCard(
-                    day: "Today",
-                    exercise: "Push ups",
-                    calories: 150,
-                    reps: "10/10",
-                  ),
-                  _WorkoutCard(
-                    day: "Tuesday",
-                    exercise: "Squats",
-                    calories: 85,
-                    reps: "7/10",
-                  ),
-                  _WorkoutCard(
-                    day: "Monday",
-                    exercise: "Deadlift",
-                    calories: 165,
-                    reps: "10/20",
-                  ),
-                ],
+              child: Consumer<WorkoutProvider>(
+                builder: (context, workoutProvider, _) {
+                  final exercises = workoutProvider.exercises;
+
+                  if (exercises.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No exercises added yet",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: exercises.length,
+                    itemBuilder: (context, index) {
+                      final ex = exercises[index];
+                      return _WorkoutCard(
+                        day: "Today",
+                        exercise: ex.title!,
+                        calories: ex.calories,
+                        reps: "${ex.reps}/${ex.maxReps}",
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
@@ -81,42 +120,48 @@ class CaloriesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCaloriesIndicator() {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          width: 150.w,
-          height: 150.w,
-          child: CircularProgressIndicator(
-            value: 0.75, // 75% progress for demo
-            strokeWidth: 12,
-            backgroundColor: Colors.grey.shade800,
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
-          ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "3,600",
-              style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+  Widget _buildCaloriesIndicator(int totalCalories) {
+    double progress = totalCalories / maxCalories;
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: totalCalories.toDouble()),
+      duration: const Duration(seconds: 1),
+      builder: (context, value, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              width: 150.w,
+              height: 150.w,
+              child: CircularProgressIndicator(
+                value: progress,
+                strokeWidth: 12,
+                backgroundColor: Colors.grey.shade800,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+              ),
             ),
-            Text(
-              "cal",
-              style: TextStyle(color: Colors.grey),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  value.toInt().toString(),
+                  style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+                const Text(
+                  "cal",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
 
-// Workout Card Widget
 class _WorkoutCard extends StatelessWidget {
   final String day;
   final String exercise;
@@ -141,7 +186,6 @@ class _WorkoutCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Circular Calorie Indicator
           Stack(
             alignment: Alignment.center,
             children: [
@@ -163,7 +207,6 @@ class _WorkoutCard extends StatelessWidget {
             ],
           ),
           SizedBox(width: 16.w),
-          // Details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +226,6 @@ class _WorkoutCard extends StatelessWidget {
               ],
             ),
           ),
-          // Reps info
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

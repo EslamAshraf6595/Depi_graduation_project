@@ -2,7 +2,7 @@
 import 'package:fitness_app/utils/app_assets.dart';
 import 'package:fitness_app/utils/app_color.dart';
 import 'package:fitness_app/utils/tabs_list.dart';
-import 'package:fitness_app/utils/theme_provider.dart';
+import '../../../provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
