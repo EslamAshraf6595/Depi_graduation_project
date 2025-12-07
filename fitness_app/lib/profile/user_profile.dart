@@ -1,4 +1,8 @@
+import 'package:fitness_app/profile/settings.dart';
+import 'package:fitness_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -12,21 +16,18 @@ class _ProfileScreenState extends State<UserProfile> {
   int selectedTab = 0;
 
   final List<List<String>> _tabImages = [
-    // صور
     [
       'https://images.unsplash.com/photo-1579758629938-03607ccdbaba',
       'https://images.unsplash.com/photo-1571019613914-85f342c8a22e',
       'https://images.unsplash.com/photo-1594737625785-cdef0f3e500d',
       'https://images.unsplash.com/photo-1599058917212-d750089bc07e',
     ],
-    // فيديوهات (مجرد صور مؤقتة)
     [
       'https://images.unsplash.com/photo-1598970434795-0c54fe7c0648',
       'https://images.unsplash.com/photo-1595152772835-219674b2a8a6',
       'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61',
       'https://images.unsplash.com/photo-1605296867304-46d5465a13f1',
     ],
-    // إنجازات (مجرد صور مؤقتة)
     [
       'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519',
       'https://images.unsplash.com/photo-1526401485004-2fda9f4a8ce9',
@@ -37,6 +38,7 @@ class _ProfileScreenState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
       appBar: AppBar(
@@ -50,7 +52,9 @@ class _ProfileScreenState extends State<UserProfile> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.orangeAccent),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, SettingsScreen.routeName);
+            },
           ),
         ],
       ),
@@ -59,7 +63,7 @@ class _ProfileScreenState extends State<UserProfile> {
           children: [
             _buildHeader(),
             const SizedBox(height: 12),
-            _buildUserInfo(),
+            _buildUserInfo(userProvider.username!),
             const SizedBox(height: 16),
             _buildButtons(),
             const SizedBox(height: 20),
@@ -72,15 +76,17 @@ class _ProfileScreenState extends State<UserProfile> {
     );
   }
 
+  // ---------------- Header ----------------
+
   Widget _buildHeader() {
     return Stack(
       alignment: Alignment.center,
       children: [
         Container(
           height: 150,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             image: DecorationImage(
-              image: NetworkImage(
+              image: CachedNetworkImageProvider(
                 'https://images.unsplash.com/photo-1598970434795-0c54fe7c0648',
               ),
               fit: BoxFit.cover,
@@ -92,9 +98,9 @@ class _ProfileScreenState extends State<UserProfile> {
           child: CircleAvatar(
             radius: 45,
             backgroundColor: Colors.orangeAccent,
-            child: const CircleAvatar(
+            child: CircleAvatar(
               radius: 42,
-              backgroundImage: NetworkImage(
+              backgroundImage: CachedNetworkImageProvider(
                 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6',
               ),
             ),
@@ -104,13 +110,15 @@ class _ProfileScreenState extends State<UserProfile> {
     );
   }
 
-  Widget _buildUserInfo() {
+  // ---------------- User Info ----------------
+
+  Widget _buildUserInfo(String firstname) {
     return Padding(
       padding: const EdgeInsets.only(top: 45.0),
       child: Column(
-        children: const [
+        children: [
           Text(
-            "Nick Barrew",
+            "${firstname}",
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -137,6 +145,8 @@ class _ProfileScreenState extends State<UserProfile> {
       ),
     );
   }
+
+  // ---------------- Buttons ----------------
 
   Widget _buildButtons() {
     return Row(
@@ -165,6 +175,8 @@ class _ProfileScreenState extends State<UserProfile> {
     );
   }
 
+  // ---------------- Tabs ----------------
+
   Widget _buildTabs() {
     final List<IconData> icons = [
       Icons.grid_on,
@@ -192,6 +204,8 @@ class _ProfileScreenState extends State<UserProfile> {
     );
   }
 
+  // ---------------- Grid Images with Cache ----------------
+
   Widget _buildPostsGrid() {
     final images = _tabImages[selectedTab];
 
@@ -208,7 +222,15 @@ class _ProfileScreenState extends State<UserProfile> {
         itemBuilder: (context, index) {
           return ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(images[index], fit: BoxFit.cover),
+            child: CachedNetworkImage(
+              imageUrl: images[index],
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Center(
+                child: CircularProgressIndicator(color: Colors.orangeAccent),
+              ),
+              errorWidget: (context, url, error) =>
+                  Icon(Icons.error, color: Colors.red),
+            ),
           );
         },
       ),

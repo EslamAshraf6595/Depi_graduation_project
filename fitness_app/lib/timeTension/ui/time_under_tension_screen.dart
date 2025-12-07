@@ -13,7 +13,7 @@ class TimeUnderTensionScreen extends StatelessWidget {
     double overallAccuracy = workoutProvider.calculateOverallAccuracy() * 100;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1C1C1E),
+     // backgroundColor: const Color(0xFF1C1C1E),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

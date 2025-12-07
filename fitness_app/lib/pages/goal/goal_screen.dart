@@ -1,4 +1,5 @@
 import 'package:fitness_app/pages/goal/add_exercise_screen.dart';
+import 'package:fitness_app/pages/goal/edit_exercise_screen.dart';
 import 'package:fitness_app/provider/exercise_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,8 @@ class _GoalScreenState extends State<GoalScreen> {
   @override
   Widget build(BuildContext context) {
     final exercises = Provider.of<ExerciseProvider>(context).exercises;
-    final progressPercent = Provider.of<ExerciseProvider>(context).overallProgress;
+    final progressPercent =
+        Provider.of<ExerciseProvider>(context).overallProgress;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1C1C1E),
@@ -40,7 +42,7 @@ class _GoalScreenState extends State<GoalScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Overall progress: ${progressPercent.toStringAsFixed(0)}%",
+              "Overall progress: ${(progressPercent * 100).toInt()}%",
               style: const TextStyle(color: Colors.white70),
             ),
             const SizedBox(height: 6),
@@ -49,7 +51,8 @@ class _GoalScreenState extends State<GoalScreen> {
               child: LinearProgressIndicator(
                 value: (progressPercent / 100).clamp(0.0, 1.0),
                 minHeight: 10,
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
                 backgroundColor: Colors.white24,
               ),
             ),
@@ -88,9 +91,16 @@ class _GoalScreenState extends State<GoalScreen> {
       decoration: BoxDecoration(
         color: isSelected ? Colors.orange : Colors.black,
         borderRadius: BorderRadius.circular(6),
-        border: isSelected ? null : Border.all(color: Colors.orange.withOpacity(0.5)),
+        border: isSelected
+            ? null
+            : Border.all(color: Colors.orange.withOpacity(0.5)),
         boxShadow: isSelected
-            ? [BoxShadow(color: Colors.orange.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 3))]
+            ? [
+                BoxShadow(
+                    color: Colors.orange.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3))
+              ]
             : [],
       ),
       child: Center(
@@ -112,7 +122,8 @@ class _GoalScreenState extends State<GoalScreen> {
             onTap: () async {
               final result = await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AddExerciseScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const AddExerciseScreen()),
               );
               if (result != null && mounted) setState(() {});
             },
@@ -133,7 +144,10 @@ class _GoalScreenState extends State<GoalScreen> {
                   SizedBox(width: 8),
                   Text(
                     "Create new plan",
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                 ],
               ),
@@ -194,7 +208,10 @@ class _GoalScreenState extends State<GoalScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: RadialGradient(
-            colors: [const Color(0xFFEA8945).withOpacity(0.3), const Color(0xFF0E0E0E)],
+            colors: [
+              const Color(0xFFEA8945).withOpacity(0.3),
+              const Color(0xFF0E0E0E)
+            ],
             center: Alignment.topRight,
             radius: 1.5,
           ),
@@ -205,12 +222,51 @@ class _GoalScreenState extends State<GoalScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(ex.title ?? "", style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(ex.title ?? "",
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
                 GestureDetector(
                   onTap: () async {
                     // Edit logic can be added here
                   },
-                  child: const Icon(Icons.edit, color: Colors.orange, size: 20),
+                  child: IconButton(
+                    onPressed: () async {
+                      final updatedData = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditExerciseScreen(
+                            title: ex.title ?? "",
+                            duration: ex.duration ?? "",
+                            reps: ex.maxReps.toString(),
+                            sets: ex.maxSets.toString(),
+                            exercise: ex.numberOfExercises.toString(),
+                          ),
+                        ),
+                      );
+
+                      if (updatedData != null) {
+                        // Update the exercise object using the provider
+                        final provider = Provider.of<ExerciseProvider>(context,
+                            listen: false);
+
+                        ex.title = updatedData['title'];
+                        ex.duration = updatedData['duration'];
+                        ex.maxReps =
+                            int.tryParse(updatedData['reps']) ?? ex.maxReps;
+                        ex.maxSets =
+                            int.tryParse(updatedData['sets']) ?? ex.maxSets;
+                        ex.numberOfExercises =
+                            int.tryParse(updatedData['exercise']) ??
+                                ex.numberOfExercises;
+
+                        provider.updateExercise(ex);
+                        setState(() {}); // refresh UI
+                      }
+                    },
+                    icon: Icon(Icons.edit, color: Colors.orange, size: 20),
+                  ),
                 ),
               ],
             ),
@@ -232,12 +288,14 @@ class _GoalScreenState extends State<GoalScreen> {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(Color(0xFFFF7F32)),
                 backgroundColor: Colors.white24,
               ),
             ),
             const SizedBox(height: 4),
-            Text("${(progress * 100).toStringAsFixed(0)}%", style: const TextStyle(color: Colors.white54, fontSize: 12)),
+            Text("${(progress * 100).toStringAsFixed(0)}%",
+                style: const TextStyle(color: Colors.white54, fontSize: 12)),
           ],
         ),
       ),
@@ -248,9 +306,14 @@ class _GoalScreenState extends State<GoalScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 14)),
+        Text(label,
+            style: const TextStyle(color: Colors.white70, fontSize: 14)),
         const SizedBox(height: 4),
-        Text(value, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
+        Text(value,
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14)),
       ],
     );
   }

@@ -1,33 +1,76 @@
-class ExerciseModel {
+import 'package:hive/hive.dart';
+
+part 'exercise_model.g.dart';
+
+@HiveType(typeId: 1)
+class ExerciseModel extends HiveObject { // ✅ Extend HiveObject
+  @HiveField(0)
   String? title;
+
+  @HiveField(1)
   String? duration;
+
+  @HiveField(2)
   int maxReps;
+
+  @HiveField(3)
   int maxSets;
+
+  @HiveField(4)
   int completedReps;
+
+  @HiveField(5)
   int numberOfExercises;
-  bool isDone = false;
+
+  @HiveField(6)
+  bool isDone;
+
+  @HiveField(7)
   int weight;
+
+  @HiveField(8)
   int rest;
+
+  @HiveField(9)
   int reps;
-  int type; // 0 = Warm up, 1 = Main, 2 = Cool down
+
+  @HiveField(10)
+  int type;
+
+  @HiveField(11)
   int target;
+
+  @HiveField(12)
   bool isFavorite;
+
+  @HiveField(13)
   bool isCompleted;
-  int doneReps; // track reps done
-  int doneSets; // track sets done
 
-  final int originalMaxReps;
-  final int originalMaxSets;
+  @HiveField(14)
+  int doneReps;
 
-  double formAccuracy; // 0.0 – 1.0
+  @HiveField(15)
+  int doneSets;
+
+  @HiveField(16)
+  int originalMaxReps;
+
+  @HiveField(17)
+  int originalMaxSets;
+
+  @HiveField(18)
+  double formAccuracy;
+
+  @HiveField(19)
   String formFeedback;
+
+  @HiveField(20)
   String completedDateStr;
 
-  int calories = 0;
+  @HiveField(21)
+  int calories;
 
   ExerciseModel({
-    this.doneReps = 0,
-    this.doneSets = 0,
     this.title,
     this.duration,
     this.maxReps = 10,
@@ -42,6 +85,8 @@ class ExerciseModel {
     this.isFavorite = false,
     this.isCompleted = false,
     this.isDone = false,
+    this.doneReps = 0,
+    this.doneSets = 0,
     this.formAccuracy = 0.0,
     this.formFeedback = '',
     this.completedDateStr = '',
@@ -50,9 +95,6 @@ class ExerciseModel {
         originalMaxSets = maxSets,
         target = target ?? maxReps;
 
-  // --------------------------
-  // Reactive progress
-  // --------------------------
   double get progress {
     final total = maxReps * maxSets;
     if (total == 0) return 0;
@@ -60,6 +102,5 @@ class ExerciseModel {
     return (completed / total).clamp(0.0, 1.0);
   }
 
-  // Accuracy getter
   double get calculatedAccuracy => progress;
 }

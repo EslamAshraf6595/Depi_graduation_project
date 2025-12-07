@@ -1,4 +1,7 @@
+import 'package:fitness_app/auth/login.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fitness_app/provider/user_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -64,7 +67,17 @@ class SettingsScreen extends StatelessWidget {
           _buildSettingItem(
             icon: Icons.logout,
             label: 'Logout',
-            onTap: () {},
+            onTap: () {
+              // مسح بيانات المستخدم
+              Provider.of<UserProvider>(context, listen: false).logout();
+
+              // الانتقال إلى شاشة Login مع إزالة جميع الشاشات السابقة
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const Login()),
+                (route) => false,
+              );
+            },
             color: Colors.redAccent,
             isLogout: true,
           ),
@@ -74,10 +87,10 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _divider() => const Divider(
-    color: Color(0xFF2A2A2D),
-    height: 1,
-    thickness: 0.6,
-  );
+        color: Color(0xFF2A2A2D),
+        height: 1,
+        thickness: 0.6,
+      );
 
   Widget _buildSettingItem({
     required IconData icon,
@@ -115,8 +128,7 @@ class SettingsScreen extends StatelessWidget {
               style: TextStyle(
                 color: isLogout ? Colors.redAccent : Colors.white,
                 fontSize: 16,
-                fontWeight:
-                isLogout ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: isLogout ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],

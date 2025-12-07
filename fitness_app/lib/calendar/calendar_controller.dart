@@ -24,38 +24,16 @@ class CalendarController extends ChangeNotifier {
   DateTime _currentDate = DateTime(2025, 7, 10);
   DateTime _selectedDate = DateTime(2025, 7, 10);
 
-
-  Map<DateTime, List<Plan>> _plans = {
-    DateTime(2025, 7, 5): [
-      Plan(
-        type: 'Push ups',
-        exercise: '50',
-        sets: '3',
-        reps: '15',
-        duration: '30 minutes',
-        isAllDay: false,
-        date: DateTime(2025, 7, 5),
-      ),
-    ],
-    DateTime(2025, 7, 8): [
-      Plan(
-        type: 'Pull ups',
-        exercise: '30',
-        sets: '4',
-        reps: '10',
-        duration: '25 minutes',
-        isAllDay: false,
-        date: DateTime(2025, 7, 8),
-      ),
-    ],
-  };
+  Map<DateTime, List<Plan>> _plans = {};
 
   // Controllers for the add plan form
   final TextEditingController typeController = TextEditingController();
   final TextEditingController exerciseController = TextEditingController();
   final TextEditingController setsController = TextEditingController(text: '3');
-  final TextEditingController repsController = TextEditingController(text: '10');
-  final TextEditingController durationController = TextEditingController(text: '20 minutes');
+  final TextEditingController repsController =
+      TextEditingController(text: '10');
+  final TextEditingController durationController =
+      TextEditingController(text: '20 minutes');
   bool _isAllDay = true;
 
   DateTime get currentDate => _currentDate;
@@ -130,7 +108,6 @@ class CalendarController extends ChangeNotifier {
     DateTime today = DateTime.now();
 
     _plans.forEach((date, plans) {
-
       if (date.isBefore(DateTime(today.year, today.month, today.day))) {
         history.addAll(plans);
       }
@@ -148,37 +125,60 @@ class CalendarController extends ChangeNotifier {
   }
 
   bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   String _getWeekday(int weekday) {
     switch (weekday) {
-      case 1: return 'Monday';
-      case 2: return 'Tuesday';
-      case 3: return 'Wednesday';
-      case 4: return 'Thursday';
-      case 5: return 'Friday';
-      case 6: return 'Saturday';
-      case 7: return 'Sunday';
-      default: return '';
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+      default:
+        return '';
     }
   }
 
   String _getMonth(int month) {
     switch (month) {
-      case 1: return 'January';
-      case 2: return 'February';
-      case 3: return 'March';
-      case 4: return 'April';
-      case 5: return 'May';
-      case 6: return 'June';
-      case 7: return 'July';
-      case 8: return 'August';
-      case 9: return 'September';
-      case 10: return 'October';
-      case 11: return 'November';
-      case 12: return 'December';
-      default: return '';
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return '';
     }
   }
 

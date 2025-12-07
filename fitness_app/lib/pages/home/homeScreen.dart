@@ -1,8 +1,8 @@
-
 import 'package:fitness_app/utils/app_assets.dart';
 import 'package:fitness_app/utils/app_color.dart';
 import 'package:fitness_app/utils/tabs_list.dart';
-import '../../../provider/theme_provider.dart';
+import 'package:fitness_app/provider/theme_provider.dart';
+import 'package:fitness_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -16,49 +16,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    return Scaffold(
-      appBar: AppBar(title: Text("app_title".tr())),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text("welcome".tr(),
-      //           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-      //       const SizedBox(height: 20),
-      //       ElevatedButton(
-      //         onPressed: () {
-      //           if (context.locale.languageCode == 'en') {
-      //             context.setLocale(Locale('ar', 'EG'));
-      //           } else {
-      //             context.setLocale(Locale('en', 'US'));
-      //           }
-      //         },
-      //         child: Text("change_language".tr()),
-      //       ),
-      //       ElevatedButton(
-      //         onPressed: () {
-      //           if (themeProvider.themeMode == ThemeMode.light) {
-      //             themeProvider.updateTheme(ThemeMode.dark);
-      //             print("change to dark");
-      //           } else {
-      //             themeProvider.updateTheme(ThemeMode.light);
-      //             print("change to light");
-      //           }
-      //         },
-      //         child: Text(
-      //           "change_theme".tr(),
-      //         ),
-      //       ),
+    final userProvider = Provider.of<UserProvider>(context);
 
-      //     ],
-      //   ),
-      // ),
-      
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      ),
+
+      /// MAIN BODY
       body: TabsList.tabs[selectedIndex],
+
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
+      /// BOTTOM NAVBAR
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (index) {
@@ -72,20 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: AppColors.grey,
         items: [
           BottomNavigationBarItem(
-              icon: const ImageIcon(
-                AssetImage(AppAssets.home),
-              ),
+              icon: const ImageIcon(AssetImage(AppAssets.home)),
               label: "home".tr()),
           BottomNavigationBarItem(
-              icon: const ImageIcon(
-                AssetImage(AppAssets.gym),
-                size: 30,
-              ),
+              icon: const ImageIcon(AssetImage(AppAssets.gym), size: 30),
               label: "goals".tr()),
           BottomNavigationBarItem(
-
-              icon: const Icon(Icons.add_circle_outline), label: "Workout".tr()),
-
+              icon: const Icon(Icons.add_circle_outline),
+              label: "Workout".tr()),
           BottomNavigationBarItem(
               icon: const ImageIcon(AssetImage(AppAssets.calendar)),
               label: "calendar".tr()),
@@ -108,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
               label: "profile".tr()),
         ],
       ),
-      
     );
   }
 }

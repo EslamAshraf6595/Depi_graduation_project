@@ -1,3 +1,4 @@
+import 'package:fitness_app/provider/user_provider.dart';
 import 'package:fitness_app/roots/app_roots.dart';
 import 'package:fitness_app/utils/app_assets.dart';
 import 'package:fitness_app/utils/app_color.dart';
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ExerciseProvider>(context);
-
+    final userProvider = Provider.of<UserProvider>(context);
     // Calculate overall progress based on done reps and sets of all exercises
     double progressValue = 0.0;
     if (provider.exercises.isNotEmpty) {
@@ -27,10 +28,12 @@ class _HomePageState extends State<HomePage> {
       for (var ex in provider.exercises) {
         final target = ex.maxReps * ex.maxSets;
         if (target > 0) {
-          totalProgress += ex.doneReps / target; // doneReps reflects actual work done
+          totalProgress +=
+              ex.doneReps / target; // doneReps reflects actual work done
         }
       }
-      progressValue = (totalProgress / provider.exercises.length).clamp(0.0, 1.0);
+      progressValue =
+          (totalProgress / provider.exercises.length).clamp(0.0, 1.0);
     }
 
     return Scaffold(
@@ -78,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                             style: AppTextStyle.bold20white,
                           ),
                           Text(
-                            "Nick!",
+                            "${userProvider.username!.split("@").first ?? ''}!",
                             style: AppTextStyle.bold20white,
                           ),
                           SizedBox(height: 8.h),
